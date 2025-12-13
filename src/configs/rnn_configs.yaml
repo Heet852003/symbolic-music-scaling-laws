@@ -1,0 +1,41 @@
+models:
+  tiny:
+    embedding_dim: 128
+    hidden_dim: 256
+    n_layers: 2
+    dropout: 0.1
+    tie_weights: false
+  
+  small:
+    embedding_dim: 256
+    hidden_dim: 512
+    n_layers: 3
+    dropout: 0.1
+    tie_weights: false
+  
+  medium:
+    embedding_dim: 512
+    hidden_dim: 1024
+    n_layers: 4
+    dropout: 0.1
+    tie_weights: false
+  
+  large:
+    embedding_dim: 768
+    hidden_dim: 1536
+    n_layers: 5
+    dropout: 0.1
+    tie_weights: false
+
+training:
+  block_size: 1024
+  batch_size: 64
+  num_epochs: 1
+  learning_rate: 3e-4
+  weight_decay: 0.1
+  optimizer: adamw
+  scheduler: cosine
+  warmup_steps: 1000
+  grad_clip: 1.0
+  eval_interval: 1000
+

@@ -1,0 +1,21 @@
+model:
+  d_model: 768
+  n_heads: 12
+  n_layers: 8
+  d_ff: 3072
+  max_seq_len: 1024
+  dropout: 0.1
+  tie_weights: false
+
+training:
+  block_size: 1024
+  batch_size: 32
+  num_epochs: 1
+  learning_rate: 3e-4
+  weight_decay: 0.1
+  optimizer: adamw
+  scheduler: cosine
+  warmup_steps: 1000
+  grad_clip: 1.0
+  eval_interval: 1000
+
