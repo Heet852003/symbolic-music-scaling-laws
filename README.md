@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/logo.svg" width="100" alt="Symbolic Music Scaling Laws logo" />
+</p>
+
 <h1 align="center">Symbolic Music Scaling Laws</h1>
 <p align="center"><b>Do neural scaling laws hold for music? Training Transformers and RNNs of five sizes on symbolic music to find out.</b></p>
 
