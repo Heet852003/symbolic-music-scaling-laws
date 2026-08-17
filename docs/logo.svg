@@ -1,0 +1,29 @@
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="noteGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c4b5fd"/>
+      <stop offset="100%" stop-color="#6d28d9"/>
+    </linearGradient>
+  </defs>
+
+  <circle cx="128" cy="128" r="112" fill="#1e1b3a" stroke="#4c1d95" stroke-width="4"/>
+
+  <g stroke="#4c1d95" stroke-width="2" opacity="0.5">
+    <line x1="60" y1="92" x2="196" y2="92"/>
+    <line x1="60" y1="112" x2="196" y2="112"/>
+    <line x1="60" y1="132" x2="196" y2="132"/>
+  </g>
+
+  <rect x="128" y="150" width="14" height="24" rx="2" fill="url(#noteGrad)"/>
+  <rect x="150" y="130" width="14" height="24" rx="2" fill="url(#noteGrad)" opacity="0.85"/>
+  <rect x="172" y="105" width="14" height="24" rx="2" fill="url(#noteGrad)" opacity="0.7"/>
+
+  <circle cx="128" cy="182" r="16" fill="url(#noteGrad)"/>
+  <circle cx="150" cy="162" r="14" fill="url(#noteGrad)" opacity="0.85"/>
+  <circle cx="172" cy="137" r="12" fill="url(#noteGrad)" opacity="0.7"/>
+
+  <path d="M84,175 L84,72 L108,80" fill="none" stroke="url(#noteGrad)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="72" cy="180" r="16" fill="url(#noteGrad)"/>
+
+  <circle cx="128" cy="128" r="106" fill="none" stroke="#ede9fe" stroke-width="2" opacity="0.2"/>
+</svg>
