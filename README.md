@@ -1,175 +1,73 @@
-# CS-GY 6923: Scaling Laws for Symbolic Music Language Models
+<h1 align="center">Symbolic Music Scaling Laws</h1>
+<p align="center"><b>Do neural scaling laws hold for music? Training Transformers and RNNs of five sizes on symbolic music to find out.</b></p>
 
-This project explores scaling laws for transformer and RNN-based language models trained on symbolic music data (ABC notation).
+<p align="center">
+  <img alt="PyTorch" src="https://img.shields.io/badge/pytorch-2.0+-EE4C2C?logo=pytorch&logoColor=white">
+  <img alt="Python" src="https://img.shields.io/badge/python-3.10+-3776AB?logo=python&logoColor=white">
+  <img alt="Weights & Biases" src="https://img.shields.io/badge/tracking-wandb-FFBE00?logo=weightsandbiases&logoColor=black">
+</p>
 
-## Project Structure
+Neural scaling laws (loss decreasing as a predictable power law in model
+size and data) are well studied for text. This project runs the same
+experiment on symbolic music: Transformer and LSTM language models at five
+sizes (tiny through XL) are trained on ABC-notation music converted from
+the Lakh MIDI Dataset, then their validation loss is fit against parameter
+count to see whether music follows the same power-law trend as language.
 
-```
-cs_gy_6923_project/
-├── README.md
-├── requirements.txt
-├── data/
-│   ├── raw/              # Raw MIDI files
-│   ├── processed/        # Converted ABC files
-│   └── tokenized/        # Tokenized data
-├── src/
-│   ├── preprocessing/
-│   │   ├── download_data.py
-│   │   ├── midi_to_abc.py
-│   │   ├── tokenize.py
-│   │   └── split_data.py
-│   ├── models/
-│   │   ├── transformer.py
-│   │   ├── rnn.py
-│   │   └── base.py
-│   ├── training/
-│   │   ├── train_transformer.py
-│   │   ├── train_rnn.py
-│   │   └── utils.py
-│   ├── evaluation/
-│   │   ├── evaluate.py
-│   │   ├── generate_samples.py
-│   │   └── scaling_analysis.py
-│   └── configs/
-│       ├── transformer_tiny.yaml
-│       ├── transformer_small.yaml
-│       ├── transformer_medium.yaml
-│       ├── transformer_large.yaml
-│       ├── transformer_xl.yaml
-│       └── rnn_configs.yaml
-├── scripts/
-│   ├── run_preprocessing.sh
-│   ├── run_scaling_study.sh
-│   └── generate_final_samples.sh
-├── outputs/
-│   ├── models/           # Trained model checkpoints
-│   ├── samples/          # Generated music samples
-│   └── plots/            # Scaling plots and training curves
-└── report/
-    └── report.md         # Project report (convert to PDF)
+## Pipeline
 
 ```
+MIDI (Lakh dataset) → ABC notation (music21) → tokenize → train N model sizes → fit scaling curve
+```
 
-## Setup
+1. **Preprocessing** (`src/preprocessing/`): downloads the Lakh MIDI
+   Dataset, converts MIDI to ABC notation with `music21`, tokenizes it,
+   and splits train/val/test.
+2. **Models** (`src/models/`): a from-scratch Transformer and an
+   LSTM-based RNN, both implemented directly (not wrapping a pretrained
+   model), sharing a common `base.py` interface.
+3. **Training** (`src/training/`): trains each architecture at five
+   configured sizes (`src/configs/transformer_{tiny,small,medium,large,xl}.yaml`,
+   `rnn_configs.yaml`), logging to TensorBoard/W&B.
+4. **Evaluation** (`src/evaluation/`): fits a power law to loss vs.
+   parameter count, plots training curves and compute efficiency, and
+   generates music samples from trained checkpoints.
 
-### 1. Install Dependencies
+## Running it
 
 ```bash
 pip install -r requirements.txt
-```
 
-### 2. Download and Preprocess Data
-
-**Option A: Using the Python script (Recommended - Cross-platform):**
-```bash
+# 1. Data: download Lakh MIDI, convert to ABC, tokenize, split
 python run_preprocessing.py
-```
 
-**Option B: Using bash script (Linux/Mac/Git Bash):**
-```bash
-bash scripts/run_preprocessing.sh
-```
-
-**Option C: Manual steps:**
-```bash
-# Download Lakh MIDI dataset
-python src/preprocessing/download_data.py
-
-# Convert MIDI to ABC notation
-python src/preprocessing/midi_to_abc.py --input_dir data/raw --output_dir data/processed
-
-# Tokenize and split data
-python src/preprocessing/tokenize.py --input_dir data/processed --output_dir data/tokenized
-python src/preprocessing/split_data.py --input_dir data/tokenized
-```
-
-### 3. Run Scaling Studies
-
-**Option A: Using the Python script (Recommended - Cross-platform):**
-```bash
+# 2. Train every configured model size and fit the scaling curve
 python run_scaling_study.py
-```
 
-**Option B: Using bash script (Linux/Mac/Git Bash):**
-```bash
-bash scripts/run_scaling_study.sh
-```
-
-**Option C: Manual training:**
-```bash
-# Train transformer models
-python src/training/train_transformer.py --config src/configs/transformer_tiny.yaml
-python src/training/train_transformer.py --config src/configs/transformer_small.yaml
-python src/training/train_transformer.py --config src/configs/transformer_medium.yaml
-python src/training/train_transformer.py --config src/configs/transformer_large.yaml
-python src/training/train_transformer.py --config src/configs/transformer_xl.yaml
-
-# Train RNN models
-python src/training/train_rnn.py --config src/configs/rnn_configs.yaml
-```
-
-**Note:** Training all models will take many hours. You can also train individual models.
-
-### 4. Generate Visualizations and Analyze Scaling Laws
-
-**Option A: Generate all visualizations (Recommended - Cross-platform):**
-```bash
+# 3. Plots: training curves, compute efficiency, scaling law fit
 python generate_all_visualizations.py
-```
 
-**Option B: Using bash script (Linux/Mac/Git Bash):**
-```bash
-bash scripts/generate_all_visualizations.sh
-```
-
-**Option C: Individual scaling analysis:**
-```bash
-python src/evaluation/scaling_analysis.py --transformer_dir outputs/models/transformer --rnn_dir outputs/models/rnn
-```
-
-### 5. Generate Samples
-
-**Option A: Using the Python script (Recommended - Cross-platform):**
-```bash
+# 4. Sample generation from a trained checkpoint
 python generate_final_samples.py
 ```
 
-**Option B: Using bash script (Linux/Mac/Git Bash):**
-```bash
-bash scripts/generate_final_samples.sh
+Every script above has a `scripts/*.sh` equivalent if you'd rather run
+steps individually; see the `--help` on each `src/**/*.py` entry point for
+manual, single-model runs. Training every configured size takes several
+hours on a single GPU.
+
+## Repository layout
+
 ```
-
-**Option C: Manual generation:**
-```bash
-python src/evaluation/generate_samples.py --model_path outputs/models/transformer/xl/best_model.pt --vocab_path data/tokenized/vocab.json --num_samples 10
+src/preprocessing/   MIDI download, MIDI->ABC conversion, tokenization, splitting
+src/models/           Transformer and RNN implementations
+src/training/         training loops per architecture
+src/evaluation/       scaling-law fitting, plots, sample generation
+src/configs/           model size configs (tiny -> xl)
+scripts/               shell entry points mirroring the run_*.py scripts
 ```
-
-## Key Features
-
-- **Data Pipeline**: Automated MIDI to ABC conversion with music21
-- **Tokenization**: Flexible tokenization schemes (character-level, note-level)
-- **Model Architectures**: Transformer and LSTM implementations
-- **Scaling Analysis**: Power law fitting and comparative analysis
-- **Sample Generation**: Conditional and unconditional music generation
-
-## Windows Users
-
-**Windows-compatible scripts are available!** All bash scripts have Python equivalents that work on Windows:
-
-- `generate_all_visualizations.py` - Generate all plots
-- `run_preprocessing.py` - Run data preprocessing
-- `run_scaling_study.py` - Train all models
-- `generate_final_samples.py` - Generate music samples
-
-See `WINDOWS_SETUP.md` for detailed Windows setup instructions.
-
-## Results
-
-See `report/report.md` for detailed experimental results, scaling plots, and analysis.
 
 ## Citation
 
-If you use this code, please cite:
-- Lakh MIDI Dataset: Raffel, C. (2016). "Learning-Based Musical Similarity"
-- nanoGPT: Karpathy, A. (2023). "nanoGPT"
-
+- Lakh MIDI Dataset: Raffel, C. (2016). "Learning-Based Musical Similarity."
+- Architecture reference: Karpathy, A. (2023). "nanoGPT."
